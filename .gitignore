@@ -82,3 +82,5 @@ app/experimenter/served/
 .testmondata
 .tmontmp
 app/coverage_html_report/
+
+app/node_modules
