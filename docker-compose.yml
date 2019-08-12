@@ -10,13 +10,12 @@ services:
       - db
       - redis
     volumes:
-      - ./app/experimenter:/app/experimenter
-      - ./app/bin:/app/bin
-      - ./app/manage.py:/app/manage.py
+      - ./app:/app/
       - static_volume:/app/experimenter/served/
-    command: >
+      - node_modules_volume:/app/node_modules/
+    command:
       bash -c "
-        /app/bin/wait-for-it.sh db:5432 -- python /app/manage.py collectstatic --noinput
+        /app/bin/wait-for-it.sh db:5432 -- python /app/manage.py collectstatic --noinput;
         yarn run watch &
         python /app/manage.py runserver 0:7001
       "
@@ -77,6 +76,7 @@ services:
 volumes:
   db_volume:
   static_volume:
+  node_modules_volume:
 
 networks:
   private_nw:
