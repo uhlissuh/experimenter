@@ -363,10 +363,6 @@ class ExperimentVariantPrefForm(ExperimentVariantAddonForm):
             "value",
         ]
 
-    @property
-    def json(self):
-        return json.dumps(self.initial)
-
 
 class ExperimentVariantsFormSet(BaseInlineFormSet):
 
@@ -421,6 +417,15 @@ class ExperimentVariantsPrefFormSet(ExperimentVariantsFormSet):
                     form.add_error(
                         "value", "All branches must have a unique pref value"
                     )
+
+    @property
+    def json(self):
+        dataset = []
+
+        for form in self.forms:
+            dataset.append(form.cleaned_data if hasattr(form, "cleaned_data") else form.initial)
+
+        return json.dumps(dataset)
 
 
 class CustomModelChoiceIterator(ModelChoiceIterator):

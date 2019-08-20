@@ -86,8 +86,8 @@
     <div id="react-formset-variants"></div>
     {{ form.variants_formset.management_form }}
 
-    <div>
-      <textarea>{{form.json}}</textarea>
+    <div class="d-none">
+      <textarea id="variants-data-json">{{form.variants_formset.json}}</textarea>
     </div>
 
     <!-- <div id="formset" data-formset-prefix="{{ form.variants_formset.prefix }}">

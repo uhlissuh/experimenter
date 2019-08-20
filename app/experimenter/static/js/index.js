@@ -19,17 +19,19 @@ class BranchForm extends React.Component {
       this.addBranch = this.addBranch.bind(this)
       this.removeBranch = this.removeBranch.bind(this)
 
-      this.updateSize = this.updateSize.bind(this)
+      this.updateRatio = this.updateRatio.bind(this)
       this.updateName = this.updateName.bind(this)
       this.updateDescription = this.updateDescription.bind(this)
 
-      this.state = {branches: [{size: "", name: "", description: ""}]}
+      const jsonTextArea = document.getElementById("variants-data-json")
+
+      this.state = {branches: JSON.parse(jsonTextArea.value)}
 
   }
 
   addBranch(e) {
     e.preventDefault();
-    this.setState({branches: this.state.branches.concat({size: "", name: "", description: ""})})
+    this.setState({branches: this.state.branches.concat({ratio: "", name: "", description: ""})})
   }
 
   removeBranch(e) {
@@ -39,15 +41,15 @@ class BranchForm extends React.Component {
     this.setState({branches: this.state.branches})
   }
 
-  updateSize(e) {
-    var stateCopy = Object.assign({}, this.state.branches);
-    stateCopy[e.target.dataset.index].size = e.target.value;
+  updateRatio(e) {
+    var stateCopy = {...this.state.branches};
+    stateCopy[e.target.dataset.index].ratio = e.target.value;
 
     this.setState(stateCopy)
   }
 
   updateName(e) {
-    var stateCopy = Object.assign({}, this.state.branches);
+    var stateCopy = {...this.state.branches};
     stateCopy[e.target.dataset.index].name = e.target.value;
 
     this.setState(stateCopy)
@@ -81,7 +83,7 @@ class BranchForm extends React.Component {
                 <a href="/">help</a>
                 </Col>
                 <Col md={9}>
-                  <FormControl data-index={index} type="text" name={"variants-"+ index + "-ratio"} onChange={this.updateSize} value={branch.size}/>
+                  <FormControl data-index={index} type="text" name={"variants-"+ index + "-ratio"} onChange={this.updateRatio} value={branch.ratio}/>
                 </Col>
               </Row>
               <Row>
