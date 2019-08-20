@@ -363,6 +363,10 @@ class ExperimentVariantPrefForm(ExperimentVariantAddonForm):
             "value",
         ]
 
+    @property
+    def json(self):
+        return json.dumps(self.initial)
+
 
 class ExperimentVariantsFormSet(BaseInlineFormSet):
 

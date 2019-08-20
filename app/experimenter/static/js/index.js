@@ -4,6 +4,7 @@ import bsSelect from "bootstrap-select"
 import popper from "popper.js"
 import React from "react";
 import ReactDOM from "react-dom";
+import { Button, Container, Row, Col, FormControl, FormLabel } from "react-bootstrap";
 
 window.jQuery = jQuery
 window.$ = jQuery
@@ -16,7 +17,11 @@ class BranchForm extends React.Component {
       super(props);
 
       this.addBranch = this.addBranch.bind(this)
+      this.removeBranch = this.removeBranch.bind(this)
+
       this.updateSize = this.updateSize.bind(this)
+      this.updateName = this.updateName.bind(this)
+      this.updateDescription = this.updateDescription.bind(this)
 
       this.state = {branches: [{size: "", name: "", description: ""}]}
 
@@ -27,23 +32,32 @@ class BranchForm extends React.Component {
     this.setState({branches: this.state.branches.concat({size: "", name: "", description: ""})})
   }
 
-  updateSize(e) {
-    console.log(e.target);
-    // this.setState(this.state.branches[e.target.dataset.index].size = e.target.value)
+  removeBranch(e) {
+    e.preventDefault();
+    this.state.branches.splice(e.target.dataset.index, 1)
 
+    this.setState({branches: this.state.branches})
+  }
+
+  updateSize(e) {
     var stateCopy = Object.assign({}, this.state.branches);
-    stateCopy.items = stateCopy.items.slice();
-    stateCopy.items[e.target.dataset.index] = Object.assign({}, stateCopy.items[e.target.dataset.index]);
-    stateCopy.items[e.target.dataset.index].size = e.target.value;
+    stateCopy[e.target.dataset.index].size = e.target.value;
+
     this.setState(stateCopy)
   }
 
   updateName(e) {
-    console.log(e);
+    var stateCopy = Object.assign({}, this.state.branches);
+    stateCopy[e.target.dataset.index].name = e.target.value;
+
+    this.setState(stateCopy)
   }
 
-  updateSubscription(e) {
-    console.log(e);
+  updateDescription(e) {
+    var stateCopy = Object.assign({}, this.state.branches);
+    stateCopy[e.target.dataset.index].description = e.target.value;
+
+    this.setState(stateCopy)
   }
 
   render() {
@@ -51,22 +65,55 @@ class BranchForm extends React.Component {
       {
         this.state.branches.map((branch, index) =>
           <div key={index}>
-            <label>
-              Branch Size
-              <input data-index={index} type="text" name={"size-"+index} onChange={this.updateSize} value={branch.size}/>
-            </label>
-            <label>
-              Name
-              <input data-index={index} type="text" name={"name-"+index} onChange={this.updateName} value={branch.name}/>
-            </label>
-            <label>
-              Description
-              <input data-index={index} type="text" name={"description-"+index} onChange={this.updateSubscription} value={branch.description}/>
-            </label>
+            <Container>
+              <Row className="mb-3">
+                <Col md={{ span: 4, offset: 3 }}>
+                  { index == 0 ? <h4>Control Branch</h4> : <h4>Branch {index}</h4>}
+                </Col>
+                <Col md={5} className="text-right">
+                  { index != 0 ? <Button variant="danger" data-index={index} onClick={this.removeBranch}>X Remove Branch</Button> : null}
+                </Col>
+              </Row>
+              <Row>
+                <Col md={3} className="text-right mb-3">
+                <FormLabel><strong>Branch Size</strong></FormLabel>
+                <br/>
+                <a href="/">help</a>
+                </Col>
+                <Col md={9}>
+                  <FormControl data-index={index} type="text" name={"variants-"+ index + "-ratio"} onChange={this.updateSize} value={branch.size}/>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={3} className="text-right mb-3">
+                <FormLabel><strong>Name</strong></FormLabel>
+                <br/>
+                <a href="/">help</a>
+                </Col>
+                <Col md={9}>
+                  <FormControl data-index={index} type="text" name={"variants-" + index + "-name"} onChange={this.updateName} value={branch.name}/>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={3} className="text-right mb-3">
+                <FormLabel><strong>Description</strong></FormLabel>
+                <br/>
+                <a href="/">help</a>
+                </Col>
+                <Col md={9}>
+                  <FormControl as="textarea" data-index={index} type="text" name={"variants-" + index + "-description"} onChange={this.updateDescription} value={branch.description}/>
+                </Col>
+              </Row>
+              <hr className="heavy-line my-5"/>
+            </Container>
           </div>
         )
       }
-      <button onClick={this.addBranch}>Add a Branch</button>
+      <Row>
+        <Col className="text-right">
+          <Button variant="success" className="mb-4" onClick={this.addBranch}>+ Add Branch</Button>
+        </Col>
+      </Row>
     </div>;
   }
 }
