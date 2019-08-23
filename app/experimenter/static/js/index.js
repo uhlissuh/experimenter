@@ -11,6 +11,7 @@ window.$ = jQuery
 
 
 const variantsFormset = document.getElementById("react-formset-variants")
+const totalForms = document.getElementById("id_variants-TOTAL_FORMS")
 
 class BranchForm extends React.Component {
   constructor(props) {
@@ -22,6 +23,7 @@ class BranchForm extends React.Component {
       this.updateRatio = this.updateRatio.bind(this)
       this.updateName = this.updateName.bind(this)
       this.updateDescription = this.updateDescription.bind(this)
+      this.updateValue = this.updateValue.bind(this)
 
       const jsonTextArea = document.getElementById("variants-data-json")
 
@@ -31,7 +33,8 @@ class BranchForm extends React.Component {
 
   addBranch(e) {
     e.preventDefault();
-    this.setState({branches: this.state.branches.concat({ratio: "", name: "", description: ""})})
+    this.setState({branches: this.state.branches.concat({ratio: "", name: "", description: "", value:"", id:"", delete:"unchecked"})})
+    totalForms.value = this.state.branches.length + 1;
   }
 
   removeBranch(e) {
@@ -39,6 +42,9 @@ class BranchForm extends React.Component {
     this.state.branches.splice(e.target.dataset.index, 1)
 
     this.setState({branches: this.state.branches})
+    totalForms.value = this.state.branches.length;
+    console.log(totalForms.value);
+
   }
 
   updateRatio(e) {
@@ -56,8 +62,15 @@ class BranchForm extends React.Component {
   }
 
   updateDescription(e) {
-    var stateCopy = Object.assign({}, this.state.branches);
+    var stateCopy = {...this.state.branches};
     stateCopy[e.target.dataset.index].description = e.target.value;
+
+    this.setState(stateCopy)
+  }
+
+  updateValue(e) {
+    var stateCopy = {...this.state.branches};
+    stateCopy[e.target.dataset.index].value = e.target.value;
 
     this.setState(stateCopy)
   }
@@ -68,6 +81,8 @@ class BranchForm extends React.Component {
         this.state.branches.map((branch, index) =>
           <div key={index}>
             <Container>
+              <FormControl data-index={index} type="hidden" name={"variants-" + index + "-id"} value={branch.id}/>
+              <FormControl data-index={index} type="hidden" name={"id_variants-" + index +"-delete"} value={branch.delete}/>
               <Row className="mb-3">
                 <Col md={{ span: 4, offset: 3 }}>
                   { index == 0 ? <h4>Control Branch</h4> : <h4>Branch {index}</h4>}
@@ -104,6 +119,16 @@ class BranchForm extends React.Component {
                 </Col>
                 <Col md={9}>
                   <FormControl as="textarea" data-index={index} type="text" name={"variants-" + index + "-description"} onChange={this.updateDescription} value={branch.description}/>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={3} className="text-right mb-3">
+                <FormLabel><strong>Pref Value</strong></FormLabel>
+                <br/>
+                <a href="/">help</a>
+                </Col>
+                <Col md={9}>
+                  <FormControl data-index={index} type="text" name={"variants-" + index + "-value"} onChange={this.updateValue} value={branch.value}/>
                 </Col>
               </Row>
               <hr className="heavy-line my-5"/>

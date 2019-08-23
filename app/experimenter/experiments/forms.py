@@ -23,7 +23,9 @@ from experimenter.experiments.models import (
     ExperimentChangeLog,
     ExperimentVariant,
 )
-from experimenter.experiments.serializers import ChangeLogSerializer
+from experimenter.experiments.serializers import (
+    ChangeLogSerializer,
+)
 from experimenter.notifications.models import Notification
 
 
@@ -423,7 +425,16 @@ class ExperimentVariantsPrefFormSet(ExperimentVariantsFormSet):
         dataset = []
 
         for form in self.forms:
-            dataset.append(form.cleaned_data if hasattr(form, "cleaned_data") else form.initial)
+            if hasattr(form, "cleaned_data"):
+                sanitized_data = {**form.cleaned_data}
+                sanitized_data.pop("experiment")
+                sanitized_data["id"] = form.instance.id
+
+                dataset.append(sanitized_data)
+            else:
+                data = {**form.initial}
+                data["id"] = form.instance.id
+                dataset.append(data)
 
         return json.dumps(dataset)
 
