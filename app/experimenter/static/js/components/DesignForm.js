@@ -53,12 +53,15 @@ class DesignForm extends React.PureComponent {
 
   removeBranch(index) {
     const variants = [...this.state.data.variants];
+    const errors = [this.state.errors.variants];
     variants.splice(index, 1);
+    errors.splice(index, 1);
     this.setState({
       data: {
         ...this.state.data,
         variants,
       },
+      errors: errors,
     });
   }
 
